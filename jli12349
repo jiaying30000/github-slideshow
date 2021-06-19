@@ -32,4 +32,74 @@ plt.plot(xfitcoef, yfitcoef, ls='--', color='red', label='Linear Fit Projection:
 plt.legend(loc=0)
 plt.show()
 
+data_in = pd.read_csv("Swedengdpppp_process2.csv",skiprows=0, delim_whitespace=False, header=None).values
+year = data_in[0:9,0]
+ppp= data_in[0:9,1]
+year_1=data_in[:,0]
+ppp_1=data_in[:,1]
+### Plot XY original data
+plt.plot(year_1, ppp_1, 'o', label='Original Data') 
+#plt.show()
+#### Generate Exponential function Fit Coef
+coef_lin = np.polyfit(year, np.log(ppp), 1,w=np.sqrt(ppp))
+print(coef_lin)
+#### Generate Exponential function fit Formula (think f(x) )
+#I directly use teh data generated in the next equation
 
+### Plot the generated curve from 1962 to 2030
+xfit = np.linspace(year_1[0]-28, year_1[-1]+14, 200)
+yfit = np.exp(0.0362380140*xfit)/np.exp(46.2590254)
+plt.plot(xfit, yfit, ls='--', color='red', label='Linear Fit Projection: y=e^({0:1.3f}x+{1:1.3f})'.format(coef_lin[0], coef_lin[1]))
+plt.legend(loc=0)
+plt.show()
+
+data_in = pd.read_csv("swedenCO2_process3.csv",skiprows=0, delim_whitespace=False, header=None).values
+year = data_in[:,0]
+aC= data_in[:,1]
+plt.plot(year, aC, 'o', label='Original Data') 
+
+year=np.linspace(1960, 2030,200)
+coefficient=np.exp(-0.0465721229*year)*np.exp(92.3958595)
+emission=coefficient*np.exp(0.0362380140*year)/np.exp(46.2590254)/1000000
+plt.plot(year, emission, ls='--', color='red')
+plt.legend(loc=0)
+plt.show()
+
+data_in = pd.read_csv("swedenCO2_process3.csv",skiprows=0, delim_whitespace=False, header=None).values
+year = data_in[39:-1,0]
+aC= data_in[39:-1,1]
+
+data = pd.read_csv("ei_result_90-15.csv",skiprows=0, delim_whitespace=False, header=None).values
+
+year = np.array(year,dtype=np.float)
+aC = np.array(aC,dtype=np.float)
+m = np.diff(aC)/np.diff(year)
+
+#3 year running-mean with government intervention (for 1960, we need the value m from 1960 to 1962)
+i=0
+runningMeanw=np.zeros((14,1))
+while i<=13:
+	runningMeanw[i,0]=(m[i]+m[i+1]+m[i+2])/3
+	i=i+1
+#print(runningMean)
+
+#3 year running-mean without government intervention (for 1960, we need the value m from 1960 to 1962)
+
+finalfit=data[9::,0]
+finalfit=np.array(finalfit,dtype=np.float)
+k=np.diff(finalfit)/np.diff(year)
+
+i=0
+runningMeano=np.zeros((14,1))
+while i<=13:
+	runningMeano[i,0]=(k[i]+k[i+1]+k[i+2])/3
+	i=i+1
+#print(runningMeano)
+
+#Then use the rMo-rMw, then we can get the difference CO2 emission
+n=runningMeano-runningMeanw
+print(n)
+print(year[1:-2])
+
+plt.plot(year[1:-2], n, ls='-', color='green',label='changed')
+plt.show()
