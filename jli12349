@@ -1,0 +1,35 @@
+import LHD
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import MyFunctions as mf
+import scipy.stats as sps
+import math
+
+#Process 1
+##Calculate the formula between GDP and CO2 emission
+### Load Data into array
+data_in = pd.read_csv("WorldCO2GDP_process1.csv",skiprows=0, delim_whitespace=False, header=None).values
+year = data_in[0:9,0]
+#print(year)
+CO2w= data_in[0:9,1]
+### Plot XY original data
+plt.plot(year, CO2w, 'o', label='Original Data') 
+#plt.show()
+### Exponential function Fit
+#### Generate Exponential function Fit Coef
+coef_lin = np.polyfit(year, np.log(CO2w), 1,w=np.sqrt(CO2w))
+print(coef_lin)
+
+#### Generate Exponential function Fit Formula 
+#I directly use the data generated
+lfit = np.e**(-0.0465721229*year+92.3958595)
+
+### Plot the generated curve from 1962 to 2030
+xfitcoef = np.linspace(year[0]-28, year[-1]+14, 200)
+yfitcoef = np.exp(-0.0465721229*xfitcoef)*np.exp(92.3958595)
+plt.plot(xfitcoef, yfitcoef, ls='--', color='red', label='Linear Fit Projection: y=e^({0:1.3f}x+{1:1.3f})'.format(coef_lin[0], coef_lin[1]))
+plt.legend(loc=0)
+plt.show()
+
+
