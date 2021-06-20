@@ -1,3 +1,6 @@
+This document contains two parts of code: Python and MATLAB. I'll follow the steps to build the code.
+
+-------------------------step1    python -------------------
 import LHD
 import numpy as np
 import pandas as pd
@@ -32,6 +35,15 @@ plt.plot(xfitcoef, yfitcoef, ls='--', color='red', label='Linear Fit Projection:
 plt.legend(loc=0)
 plt.show()
 
+-------------------------step2    python -------------------
+import LHD
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import MyFunctions as mf
+import scipy.stats as sps
+import math
+
 data_in = pd.read_csv("Swedengdpppp_process2.csv",skiprows=0, delim_whitespace=False, header=None).values
 year = data_in[0:9,0]
 ppp= data_in[0:9,1]
@@ -53,6 +65,16 @@ plt.plot(xfit, yfit, ls='--', color='red', label='Linear Fit Projection: y=e^({0
 plt.legend(loc=0)
 plt.show()
 
+
+-------------------------step3    python -------------------
+import LHD
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import MyFunctions as mf
+import scipy.stats as sps
+import math
+
 data_in = pd.read_csv("swedenCO2_process3.csv",skiprows=0, delim_whitespace=False, header=None).values
 year = data_in[:,0]
 aC= data_in[:,1]
@@ -65,6 +87,32 @@ plt.plot(year, emission, ls='--', color='red')
 plt.legend(loc=0)
 plt.show()
 
+
+-------------------------step4    MATLAB -------------------
+load Eassy_Eco2_year_Eworld.csv
+%Sweden Actural CO2 emission
+Y= Eassy_Eco2_year_Eworld(1:10,4);Y=Y(:);
+%Sweden predicted CO2 by PPP
+x=Eassy_Eco2_year_Eworld(1:10,1);x=x(:);
+%World CO2 emission
+y=Eassy_Eco2_year_Eworld(1:10,3);y=y(:)
+%Sweden Energy intensity
+z=Eassy_Eco2_year_Eworld(1:10,5);z=z(:)
+
+Z=[x y z];
+A=(Z'*Z)\(Z'*Y)
+k=x*A(1)+y*A(2)+z*A(3)
+
+
+-------------------------step5    python -------------------
+
+import LHD
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import MyFunctions as mf
+import scipy.stats as sps
+import math
 data_in = pd.read_csv("swedenCO2_process3.csv",skiprows=0, delim_whitespace=False, header=None).values
 year = data_in[39:-1,0]
 aC= data_in[39:-1,1]
